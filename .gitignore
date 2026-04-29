@@ -1,0 +1,10 @@
+# Big binaries live in Releases, not in git history
+*.zip
+*.tar.gz
+*.tar.zst
+
+# Local working dirs
+pdfs/
+.venv/
+__pycache__/
+.DS_Store
