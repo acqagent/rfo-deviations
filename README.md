@@ -16,11 +16,12 @@ Each release is a point-in-time snapshot tagged by the date the collector ran. T
 
 | Tag | Scraped | PDFs | Compressed size |
 |---|---|---|---|
+| [v2026-05-02](../../releases/tag/v2026-05-02) | 2026-05-02 | 1,191 | 395 MB |
 | [v2026-04-27](../../releases/tag/v2026-04-27) | 2026-04-27 | 1,133 | 379 MB |
 
-Direct download (private repo — login required):
+Direct download:
 ```
-gh release download v2026-04-27 -R acqagent/RFO-Class-Deviation-Corpus
+gh release download v2026-05-02 -R acqagent/rfo-deviations
 ```
 or via the web UI under the **Releases** tab.
 
@@ -55,4 +56,4 @@ The PDFs are works of the United States Government and are in the public domain 
 
 If you use this corpus in research, please cite as:
 
-> AcqAgent. *RFO Class Deviation Corpus*, version v2026-04-27. https://github.com/acqagent/RFO-Class-Deviation-Corpus
+> AcqAgent. *RFO Class Deviation Corpus*, version v2026-05-02. https://github.com/acqagent/rfo-deviations
