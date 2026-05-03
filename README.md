@@ -25,6 +25,29 @@ gh release download v2026-05-02 -R acqagent/rfo-deviations
 ```
 or via the web UI under the **Releases** tab.
 
+## XLSX summaries (in repo, by snapshot date)
+
+Two derived workbooks ship alongside `manifest.csv` for each snapshot date.
+
+### `far_class_deviations-<date>.xlsx`
+
+Per-agency Part 52 P&C tracker. **34 tabs**: a README tab plus one tab per civilian agency (33 agencies). Each agency tab carries every `52.*` provision and clause (~702 rows) with the agency's class-deviation effective date stamped on rows whose parent FAR Part is covered by an agency memo.
+
+> Schema change in v2026-05-02: prior versions of this filename held a flat per-memo index. Starting 2026-05-03 the file is the per-agency clause-level workbook described above (generated from this corpus by Claude Opus 4.7 max effort). Per-agency tab schema:
+>
+> | Column | Description |
+> |---|---|
+> | Type / Number / Part | FAR 52.* identifier and its parent Part |
+> | Pre-RFO Title / Date | Original FAR title and effective date |
+> | RFO Title | Title under the RFO; `[Reserved]` = removed by Council |
+> | `<Agency>` Deviation Effective Date | Earliest agency memo's effective date for the parent Part; per-clause overrides when a memo names a 52.x clause explicitly |
+> | Disposition | FAR Council baseline action |
+> | Notes | Agency-specific commentary when the memo flags something non-standard |
+
+### `far_provisions_clauses-<date>.xlsx`
+
+Master 52.* provision/clause list for that snapshot date — used as the blank template that the tracker is built on top of.
+
 ## Manifest schema (`manifest.csv`)
 
 Tracked in the repo so you can browse the dataset structure without downloading the zip.
