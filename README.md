@@ -27,26 +27,68 @@ or via the web UI under the **Releases** tab.
 
 ## XLSX summaries (in repo, by snapshot date)
 
-Two derived workbooks ship alongside `manifest.csv` for each snapshot date.
+Three workbooks ship alongside `manifest.csv`. Two are collector output, regenerated on
+every snapshot date. The third is a downstream derivative mirrored here for convenience.
 
-### `far_class_deviations-<date>.xlsx`
+### `far_class_deviations-<date>.xlsx` — flat deviation index
 
-Per-agency Part 52 P&C tracker. **34 tabs**: a README tab plus one tab per civilian agency (33 agencies). Each agency tab carries every `52.*` provision and clause (~702 rows) with the agency's class-deviation effective date stamped on rows whose parent FAR Part is covered by an agency memo.
+One sheet (`Class Deviations`), one row per agency class deviation, sorted newest-first by
+ISO effective date. Straight from [`far-collector`](https://github.com/acqagent/far-collector)'s
+`export_far.py`.
 
-> Schema change in v2026-05-02: prior versions of this filename held a flat per-memo index. Starting 2026-05-03 the file is the per-agency clause-level workbook described above (generated from this corpus by Claude Opus 4.7 max effort). Per-agency tab schema:
->
-> | Column | Description |
-> |---|---|
-> | Type / Number / Part | FAR 52.* identifier and its parent Part |
-> | Pre-RFO Title / Date | Original FAR title and effective date |
-> | RFO Title | Title under the RFO; `[Reserved]` = removed by Council |
-> | `<Agency>` Deviation Effective Date | Earliest agency memo's effective date for the parent Part; per-clause overrides when a memo names a 52.x clause explicitly |
-> | Disposition | FAR Council baseline action |
-> | Notes | Agency-specific commentary when the memo flags something non-standard |
+| Column | Description |
+|---|---|
+| Agency | Canonical short label |
+| Deviation # | Deviation identifier as published |
+| Title / Scope | Extracted from the memo text |
+| Effective Date (raw) | The date string as written in the PDF |
+| Effective Date (ISO) | Normalized `DATE`, or empty when the source pins down no calendar date |
+| Date Kind | `iso`, `long`, `immediate`, `delta`, `issuance`, or `unparsed` |
+| Link | Source acquisition.gov URL |
+| Scraped At | Collector run timestamp |
 
-### `far_provisions_clauses-<date>.xlsx`
+| Snapshot | Rows |
+|---|---|
+| 2026-06-23 | 1,221 |
+| 2026-04-27 | 1,102 |
 
-Master 52.* provision/clause list for that snapshot date — used as the blank template that the tracker is built on top of.
+### `far_provisions_clauses-<date>.xlsx` — Part 52 clause text
+
+One sheet (`Provisions & Clauses`), 495 rows — 396 clauses and 99 provisions — carrying the
+verbatim clause body captured from the FAR Overhaul Part 52 page. Also `export_far.py`.
+
+> This is **not** the blank P&C template the agency matrix is built on top of. That template
+> is the WarU Provision & Clause Matrix (702 rows, different columns) and lives with the
+> matrix pipeline, not here.
+
+### `far_part52_matrix-<date>.xlsx` — per-agency Part 52 tracker
+
+**34 tabs**: a README tab plus one tab per civilian agency (33 agencies). Each agency tab
+carries every `52.*` provision and clause (~702 rows) with the agency's class-deviation
+effective date stamped on rows whose parent FAR Part is covered by an agency memo.
+
+Not collector output. This is the master workbook from
+[`acqagent/all-civ-agency-far-cds-matrix`](https://github.com/acqagent/all-civ-agency-far-cds-matrix),
+which reads *this* corpus plus a blank P&C template and extracts per-agency effective dates
+with a structured-output model pass. It is byte-identical to that repo's
+`far_provisions_clauses_matrix.xlsx`. Only the 2026-05-02 snapshot exists so far.
+
+> **Renamed.** This file previously shipped as `far_class_deviations-2026-05-02.xlsx`,
+> colliding with the collector's own export name while holding a completely different
+> schema — a glob over `far_class_deviations-*.xlsx` opening the `Class Deviations` sheet
+> worked on the 04-27 and 06-23 files and raised on this one. Update any script pinned to
+> the old name.
+
+Per-agency tab schema:
+
+| Column | Description |
+|---|---|
+| Type / Number / Part | FAR 52.* identifier and its parent Part |
+| Pre-RFO Title / Date | Original FAR title and effective date |
+| RFO Title | Title under the RFO; `[Reserved]` = removed by Council |
+| `<Agency>` Deviation Effective Date | Earliest agency memo's effective date for the parent Part; per-clause overrides when a memo names a 52.x clause explicitly |
+| Disposition | FAR Council baseline action |
+| Notes | Agency-specific commentary when the memo flags something non-standard |
 
 ## Manifest schema (`manifest.csv`)
 
